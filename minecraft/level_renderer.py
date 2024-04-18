@@ -1,6 +1,6 @@
 import os
 import subprocess
-import wandb
+#import wandb
 
 
 def make_render_script(scriptpath, scriptname, obj_path, obj_name, worldname, coords):

@@ -53,13 +53,6 @@ class Config(Tap):
 
     repr_type: str = None  # Which representation type to use, currently [None, block2vec, autoencoder]
 
-    def __init__(self,
-                 *args,
-                 underscores_to_dashes: bool = False,
-                 explicit_bool: bool = False,
-                 **kwargs):
-        super().__init__(args, underscores_to_dashes, explicit_bool, kwargs)
-
     def process_args(self):
         self.device = torch.device("cpu" if self.not_cuda else "cuda:0")
         if cuda.is_available() and self.not_cuda:

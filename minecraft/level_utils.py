@@ -8,7 +8,7 @@ from loguru import logger
 import torch.nn.functional as F
 
 # import minecraft.nbt as nbt
-from PyAnvilEditor.pyanvil import World, BlockState, Canvas
+from PyAnvilEditor.pyanvil.world import BlockState, Canvas, World as BlockState, Canvas, World
 from utils import load_pkl
 
 
@@ -150,9 +150,10 @@ def read_level(opt: Config):
     # Multi-Input not implemented, but if we wanted to use it, we would need to sync the tokens
 
     # with World Files, we need the coords of our actual level
-    if not opt.coords:
+    #if not opt.coords:
         # Default coords: Ruins
-        opt.coords = ((1044, 1060), (64, 80), (1104, 1120))  # y, z, x
+        #opt.coords = ((1044, 1060), (64, 80), (1104, 1120))  # y, z, x
+    opt.coords = ((0, 16), (0, 16), (0, 16))  # y, z, x
 
     level, uniques, props = read_level_from_file(opt.input_dir, opt.input_name, opt.coords,
                                                  opt.block2repr, opt.repr_type)
@@ -171,7 +172,7 @@ def read_level(opt: Config):
 
 def read_level_from_file(input_dir, input_name, coords, block2repr, repr_type, debug=False):
     """ coords is ((y0,yend), (z0,zend), (x0,xend)) """
-
+    print(coords)
     if repr_type == "block2vec":
         # Read Representations
         uniques = [u for u in block2repr.keys()]
@@ -279,6 +280,7 @@ def save_oh_to_wrld_directly(input_dir, input_name, start_coords, oh_level, bloc
 def clear_empty_world(worlds_folder, empty_world_name='Curr_Empty_World'):
     src = os.path.join(worlds_folder, 'Empty_World')
     dst = os.path.join(worlds_folder, empty_world_name)
+    print(src)
     shutil.rmtree(dst)
     shutil.copytree(src, dst)
 
