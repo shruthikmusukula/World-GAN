@@ -77,7 +77,7 @@ def main():
         use_reals = reals
         use_maps = noise_maps
     generate_samples(generators, use_maps, use_reals,
-                     noise_amplitudes, opt, render_images=False, num_samples=100, in_s=in_s)
+                     noise_amplitudes, opt, render_images=True, num_samples=2, in_s=in_s)
 
 
 if __name__ == "__main__":

@@ -173,6 +173,7 @@ def generate_samples(generators, noise_maps, reals, noise_amplitudes, opt: Gener
             ###########
             # Generate!
             ###########
+            print("Generate")
             z_in = noise_amp * z_curr + I_prev
             I_curr = G(z_in.detach(), I_prev, temperature=1)
 
@@ -194,13 +195,16 @@ def generate_samples(generators, noise_maps, reals, noise_amplitudes, opt: Gener
                     real_level = to_level(reals[current_scale], token_list, opt.block2repr, opt.repr_type)
                     torch.save(real_level, "%s/real_bdata.pt" % dir2save)
                     torch.save(token_list, "%s/token_list.pt" % dir2save)
+                    print("render_im")
                     if render_images:
                         real_pth = "%s/reals" % dir2save
                         os.makedirs(real_pth, exist_ok=True)
+                        print(real_pth)
                         save_level_to_world(opt.output_dir, opt.output_name, (0, 0, 0), real_level, token_list, props)
                         curr_coords = [[0, real_level.shape[0]],
                                        [0, real_level.shape[1]],
                                        [0, real_level.shape[2]]]
+                        print("render")
                         render_minecraft(opt.output_name, curr_coords, real_pth, "%d_real" % current_scale)
 
                 level = to_level(I_curr.detach(), token_list, opt.block2repr, opt.repr_type)

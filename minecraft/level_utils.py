@@ -153,7 +153,7 @@ def read_level(opt: Config):
     #if not opt.coords:
         # Default coords: Ruins
         #opt.coords = ((1044, 1060), (64, 80), (1104, 1120))  # y, z, x
-    opt.coords = ((0, 16), (0, 16), (0, 16))  # y, z, x
+    opt.coords = ((70, 86), (0, 16), (0, 16))  # y, z, x
 
     level, uniques, props = read_level_from_file(opt.input_dir, opt.input_name, opt.coords,
                                                  opt.block2repr, opt.repr_type)
@@ -225,10 +225,11 @@ def read_level_from_file(input_dir, input_name, coords, block2repr, repr_type, d
     return oh_level, uniques, props
 
 
-def save_level_to_world(input_dir, input_name, start_coords, bdata_level, token_list, props=None, debug=False):
+def save_level_to_world(input_dir, input_name, start_coords, bdata_level, token_list, props=None, debug=True):
     if not props:
         props = [{} for _ in range(len(token_list))]
 
+    print("save_level_to_world")
     with World(input_name, input_dir, debug=debug) as wrld:
         # clear area with air
         # cvs = Canvas(wrld)
@@ -239,10 +240,13 @@ def save_level_to_world(input_dir, input_name, start_coords, bdata_level, token_
                 for l in range(start_coords[2], start_coords[2] + bdata_level.shape[2]):
                     block = wrld.get_block((j, k, l))
                     actual_pos = (j-start_coords[0], k-start_coords[1], l-start_coords[2])
-                    try:
-                        block.set_state(BlockState(token_list[bdata_level[actual_pos]], props[bdata_level[actual_pos]]))
-                    except Exception:
-                        print(start_coords, actual_pos)
+                    print(token_list)
+                    print(props)
+                    print(bdata_level[actual_pos].item())
+                    #try:
+                    block.set_state(BlockState(token_list[bdata_level[actual_pos]], props[bdata_level[actual_pos]]))
+                    #except Exception:
+                    #    print(start_coords, actual_pos)
 
 
 def save_oh_to_wrld_directly(input_dir, input_name, start_coords, oh_level, block2repr, repr_type, token_list=None, props=None, debug=False):
