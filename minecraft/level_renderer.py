@@ -17,11 +17,10 @@ def make_render_script(scriptpath, scriptname, obj_path, obj_name, worldname, co
         f.write('Export for Rendering: ' + os.path.join(obj_path, obj_name) + '.obj')
 
 
-def make_obj(scriptpath, scriptnames, worldpath="../minecraft_worlds/"):
+def make_obj(scriptpath, scriptnames, worldpath="output/minecraft"):
     commands = ['wine', 'minecraft/mineways/Mineways32.exe', '-m', '-s', worldpath]
     for name in scriptnames:
         commands.append(os.path.join(scriptpath, name) + '.mwscript')
-
     process = subprocess.Popen(commands,
                                stdout=subprocess.PIPE,
                                stderr=subprocess.PIPE,
