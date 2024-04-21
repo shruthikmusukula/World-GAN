@@ -70,6 +70,7 @@ def generate_samples(generators, noise_maps, reals, noise_amplitudes, opt: Gener
 
         # Make directories
         dir2save = opt.out_ + '/' + save_dir
+        print("SAVING HERE: ", dir2save )
         try:
             os.makedirs(dir2save, exist_ok=True)
             if save_tensors:
@@ -199,7 +200,7 @@ def generate_samples(generators, noise_maps, reals, noise_amplitudes, opt: Gener
                     if render_images:
                         real_pth = "%s/reals" % dir2save
                         os.makedirs(real_pth, exist_ok=True)
-                        print(real_pth)
+                        print("real_path", real_pth)
                         save_level_to_world(opt.output_dir, opt.output_name, (0, 0, 0), real_level, token_list, props)
                         curr_coords = [[0, real_level.shape[0]],
                                        [0, real_level.shape[1]],
