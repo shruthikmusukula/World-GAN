@@ -132,16 +132,19 @@ def train(real, opt: Config):
         noise_maps.append(z_opt)
         noise_amplitudes.append(opt.noise_amp)
 
+
+        print(opt.out_)
         torch.save(noise_maps, "%s/noise_maps.pth" % (opt.out_))
         torch.save(generators, "%s/generators.pth" % (opt.out_))
         torch.save(reals, "%s/reals.pth" % (opt.out_))
         torch.save(noise_amplitudes, "%s/noise_amplitudes.pth" % (opt.out_))
         torch.save(opt.num_layer, "%s/num_layer.pth" % (opt.out_))
         torch.save(opt.token_list, "%s/token_list.pth" % (opt.out_))
-        wandb.save("%s/*.pth" % opt.out_)
+        print(opt.out_)
+        #wandb.save("%s/*.pth" % opt.out_)
 
         torch.save(G.state_dict(), "%s/state_dicts/G_%d.pth" % (opt.out_, current_scale))
-        wandb.save("%s/state_dicts/*.pth" % opt.out_)
+        #wandb.save("%s/state_dicts/*.pth" % opt.out_)
 
         del D, G
 
