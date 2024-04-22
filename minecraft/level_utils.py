@@ -155,7 +155,39 @@ def read_level(opt: Config):
     #if not opt.coords:
         # Default coords: Ruins
         #opt.coords = ((1044, 1060), (64, 80), (1104, 1120))  # y, z, x
-    opt.coords = ((70, 86), (0, 16), (0, 16))  # y, z, x
+
+    #Cave in test World
+    #opt.coords = ((70, 86), (0, 16), (0, 16))  # x, y, z   Vol 4096
+
+    #Grass in test World
+    #opt.coords = ((0, 16), (70, 86), (0, 16)) # x, y, z   Vol 4096
+
+    #House in test World
+    opt.coords = ((225, 233), (68, 78), (796, 804))  # vol 640          <-recommend using these coords
+
+    #Village in test World
+    #opt.coords = ((209, 255), (60, 82), (737, 834))  # vol 98164
+
+    #Ship in castle World
+    #opt.coords = ((315, 392), (59, 115), (-1174, -1153))  # vol 90552
+
+    #Harbor in castle World
+    #opt.coords = ((271, 290), (59, 86), (-1200, -1171))  # vol 14877
+
+    #Windmill in castle World
+    #opt.coords = ((-332, -314), (90, 127), (-667, -643))  # vol 15984
+
+    #Fountain in castle World
+    #opt.coords = ((9, 31), (108, 127), (-1118, -1096))  # vol 9196
+
+    #Storage Hall in castle World
+    #opt.coords = ((133, 160), (118, 160), (-1002, -964))  # vol 43092
+
+
+
+
+
+
 
     level, uniques, props = read_level_from_file(opt.input_dir, opt.input_name, opt.coords,
                                                  opt.block2repr, opt.repr_type)
