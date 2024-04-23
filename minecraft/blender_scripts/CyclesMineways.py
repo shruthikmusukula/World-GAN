@@ -831,7 +831,7 @@ def main():
     print("Setting up textures")
     #for every material
     for material in materials:
-        if (material.active_texture and len(material.active_texture.name)>=2 and material.active_texture.name[0:2]=="Kd"):
+        if (material.active_texture and len(material.active_texture.name)>=2 and material.active_texture.name[0:2]=="Ka"):
             material_suffix = material.name[material.name.rfind("."):len(material.name)] # gets the .001 .002 .003 ... of the material
             try:
                 int(material_suffix[1:])
@@ -984,13 +984,12 @@ if __name__ == "__main__": # Standard python check to see if the code is being r
     file_path = os.path.abspath(sys.argv[-3])
     ortho_scale = float(sys.argv[-2])
     view = int(sys.argv[-1])
-
     bpy.ops.object.delete()  # Cube is traditionally selected
     print("Importing ", file_path, "\n")
     imported_object = bpy.ops.import_scene.obj(filepath=file_path)
 
     main()  # Runs the main script
-    #register() # Sets up the GUI
+    # register() # Sets up the GUI
 
     # Camera settings
     bpy.ops.object.select_all(action='DESELECT')

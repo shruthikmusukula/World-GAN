@@ -79,7 +79,7 @@ def train(real, opt: Config):
         # Multi Input is not tested for Minecraft
         for i, level in enumerate(real):
             try:
-                subprocess.call(["wine", '--version'])
+                # subprocess.call(["wine", '--version'])
                 obj_pth = os.path.join(opt.out_, "objects/real")
                 os.makedirs(obj_pth, exist_ok=True)
                 real_obj_pth = render_minecraft(opt.input_names[i], opt.coords, obj_pth, "real")
@@ -90,7 +90,7 @@ def train(real, opt: Config):
         # Default: One image
         try:
             # Check if wine is installed (Linux), then render
-            subprocess.call(["wine", '--version'])
+            # subprocess.call(["wine", '--version'])
             obj_pth = os.path.join(opt.out_, "objects/real")
             os.makedirs(obj_pth, exist_ok=True)
             real_obj_pth = render_minecraft(opt.input_name, opt.coords, obj_pth, "real")
@@ -141,10 +141,10 @@ def train(real, opt: Config):
         torch.save(opt.num_layer, "%s/num_layer.pth" % (opt.out_))
         torch.save(opt.token_list, "%s/token_list.pth" % (opt.out_))
         print(opt.out_)
-        #wandb.save("%s/*.pth" % opt.out_)
+        wandb.save("%s/*.pth" % opt.out_)
 
         torch.save(G.state_dict(), "%s/state_dicts/G_%d.pth" % (opt.out_, current_scale))
-        #wandb.save("%s/state_dicts/*.pth" % opt.out_)
+        wandb.save("%s/state_dicts/*.pth" % opt.out_)
 
         del D, G
 

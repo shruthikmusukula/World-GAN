@@ -45,7 +45,7 @@ def main():
 
     # Check if wine is available to use (Linux) and clear the MC world examples will be saved to
     try:
-        subprocess.call(["wine", "--version"])
+        # subprocess.call(["wine", "--version"])
         clear_empty_world(opt.output_dir, opt.output_name)
     except OSError:
         pass
