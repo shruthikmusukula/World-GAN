@@ -218,7 +218,7 @@ def generate_samples(generators, noise_maps, reals, noise_amplitudes, opt: Gener
                     obj_pth = "%s/objects/%d" % (dir2save, current_scale)
                     os.makedirs(obj_pth, exist_ok=True)
                     try:
-                        subprocess.call(["wine", '--version'])
+                        #subprocess.call(["wine", '--version'])
                         # Minecraft World
                         len_n = math.ceil(math.sqrt(num_samples))  # we arrange our samples in a square in the world
                         x, z = np.unravel_index(n, [len_n, len_n])  # get x, z pos according to index n
@@ -289,4 +289,4 @@ if __name__ == '__main__':
 
     generate_samples(generators, noise_maps, reals, noise_amplitudes, opt, in_s=in_s, save_tensors=opt.save_tensors,
                      scale_v=opt.scale_v, scale_h=opt.scale_h, scale_d=opt.scale_d, save_dir=s_dir_name,
-                     num_samples=opt.num_samples, current_scale=cur_scale)
+                     num_samples=16, current_scale=cur_scale)

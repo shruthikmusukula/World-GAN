@@ -13,6 +13,7 @@ from minecraft.level_renderer import render_minecraft
 from models import init_models, reset_grads, restore_weights
 from models.generator import Level_GeneratorConcatSkip2CleanAdd
 from train_single_scale import train_single_scale
+from train_single_scale_ct import train_single_scale_ct
 
 
 def calc_lowest_possible_scale(level, kernel_size, num_layers):
@@ -79,13 +80,13 @@ def train(real, opt: Config):
         # Multi Input is not tested for Minecraft
         for i, level in enumerate(real):
             try:
-                subprocess.call(["wine", '--version'])
+                #subprocess.call(["wine", '--version'])
                 obj_pth = os.path.join(opt.out_, "objects/real")
                 os.makedirs(obj_pth, exist_ok=True)
                 real_obj_pth = render_minecraft(opt.input_names[i], opt.coords, obj_pth, "real")
                 wandb.log({"real": wandb.Object3D(open(real_obj_pth))}, commit=False)
             except OSError:
-                pass
+                print("error in multiple inputs train")
     else:
         # Default: One image
         try:
@@ -96,7 +97,7 @@ def train(real, opt: Config):
             real_obj_pth = render_minecraft(opt.input_name, opt.coords, obj_pth, "real")
             wandb.log({"real": wandb.Object3D(open(real_obj_pth))}, commit=False)
         except OSError:
-            pass
+             print("error in single inputs train. This is fine dw")
         os.makedirs("%s/state_dicts" % (opt.out_), exist_ok=True)
 
     # Training Loop
@@ -119,7 +120,7 @@ def train(real, opt: Config):
         D, G = init_models(opt, use_softmax)
 
         # Actually train the current scale
-        z_opt, input_from_prev_scale, G = train_single_scale(D,  G, reals, generators, noise_maps,
+        z_opt, input_from_prev_scale, G = train_single_scale_ct(D,  G, reals, generators, noise_maps,
                                                              input_from_prev_scale, noise_amplitudes, opt)
 
         # Reset grads and save current scale
