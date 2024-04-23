@@ -135,9 +135,9 @@ def train_single_scale_ct(D, G, reals, generators, noise_maps, input_from_prev_s
                 # train with real
                 D.zero_grad()
 
-                output1, output2 = D(real)
+                D_real1_1,D_real1_2 = D(real)
 
-                errD_real = -output1.to(opt.device).mean()
+                errD_real = -D_real1_1.to(opt.device).mean()
 
                 errD_real.backward(retain_graph=True)
 
@@ -213,13 +213,16 @@ def train_single_scale_ct(D, G, reals, generators, noise_maps, input_from_prev_s
 
                 D_real2_1,D_real2_2 = D(real)
                 LAMBDA_2 = 2
-                ct_penalty = LAMBDA_2*((output1-D_real2_1)**2) 
-                print(output1.shape)
-                print(D_real2_1.shape)
-                print(ct_penalty.shape)      
-                print(output2.shape)
-                print(D_real2_2.shape)
-                ct_penalty += LAMBDA_2*0.1*((output2-D_real2_2)**2).mean(dim=1)
+                ct_penalty = LAMBDA_2*((D_real1_1-D_real2_1)**2) 
+                #print("real: ",real.shape)
+                #print("out1_1: ",D_real1_1.shape)
+                #print("out1_2: ",D_real2_1.shape)
+                #print("ct_pen: ",ct_penalty.shape)      
+                #print("out2_1: ",D_real1_2.shape)
+                #print("out2_2: ",D_real2_2.shape)
+                #print("mean: ", (LAMBDA_2*0.1*((D_real1_2-D_real2_2)**2).mean(dim=1)).shape)
+                ct_penalty += LAMBDA_2*0.1*((D_real1_2-D_real2_2)**2).mean(dim=1)
+
                 ct_penalty = torch.max((torch.zeros(ct_penalty.size()).cuda()),ct_penalty-0)
                 ct_penalty = ct_penalty.mean()
                 ct_penalty.backward()
@@ -251,7 +254,7 @@ def train_single_scale_ct(D, G, reals, generators, noise_maps, input_from_prev_s
             for j in range(opt.Gsteps):
                 G.zero_grad()
                 fake = G(noise.detach(), prev.detach(), temperature=1)
-                output = D(fake)
+                output,_ = D(fake)
 
                 errG = -output.mean()
                 errG.backward(retain_graph=False)
