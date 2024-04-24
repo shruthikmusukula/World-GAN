@@ -6,7 +6,7 @@ import torch.nn.functional as F
 from .conv_block import ConvBlock
 
 
-class Level_WDiscriminator(nn.Module):
+class Level_W_CT_Discriminator(nn.Module):
     """ Patch based Discriminator. Uses Namespace opt. """
     def __init__(self, opt):
         super().__init__()
@@ -35,15 +35,7 @@ class Level_WDiscriminator(nn.Module):
             raise NotImplementedError("Can only make 2D or 3D Conv Layers.")
 
     def forward(self, x):
-        #print("input: ", x.shape)
-        #x = x.view(-1, 1, 43, 10, 8, 10)
-        #print("input after view: ", x.shape)
         x = self.head(x)
         inner = self.body(x)
-        #print("inner: ", inner.shape)
-
         out = self.tail(inner)
-        #print("out: ", out.shape)
-        #inner = inner.view(-1, self.N)
-        #print("innerafter: ", inner.shape)
         return out, inner

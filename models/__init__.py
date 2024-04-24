@@ -4,9 +4,11 @@ import torch
 
 
 from .generator import Level_GeneratorConcatSkip2CleanAdd
-#from .discriminator import Level_WDiscriminator
-from .discriminator_ct import Level_WDiscriminator
+from .discriminator import Level_WDiscriminator
+from .discriminator_ct import Level_W_CT_Discriminator
 
+
+CT_WGAN = 2
 
 def weights_init(m):
     """ Init weights for Conv and Norm Layers. """
@@ -30,7 +32,7 @@ def init_models(opt, use_softmax=True):
     print(G)
 
     # discriminator initialization:
-    D = Level_WDiscriminator(opt).to(opt.device)
+    D = Level_W_CT_Discriminator(opt).to(opt.device) if opt.gan_type == CT_WGAN else Level_WDiscriminator(opt).to(opt.device)
     D.apply(weights_init)
     if opt.netD != "":
         D.load_state_dict(torch.load(opt.netD))

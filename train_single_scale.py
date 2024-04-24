@@ -138,7 +138,10 @@ def train_single_scale(D, G, reals, generators, noise_maps, input_from_prev_scal
                 # train with real
                 D.zero_grad()
 
-                D_real1_1, D_real1_2 = D(real)
+                if opt.gan_type == CT_WGAN:
+                    D_real1_1, D_real1_2 = D(real)
+                else:
+                    D_real1_1 = D(real)
 
                 errD_real = -D_real1_1.to(opt.device).mean()
 
@@ -192,7 +195,10 @@ def train_single_scale(D, G, reals, generators, noise_maps, input_from_prev_scal
                 fake = G(noise.detach(), prev)
 
                 # Then run the result through the discriminator
-                output, _ = D(fake.detach())
+                if opt.gan_type == CT_WGAN:
+                    output, _ = D(fake.detach())
+                else:
+                    output = D(fake.detach())
                 errD_fake = output.mean()
 
                 # Backpropagation
@@ -245,7 +251,11 @@ def train_single_scale(D, G, reals, generators, noise_maps, input_from_prev_scal
             for j in range(opt.Gsteps):
                 G.zero_grad()
                 fake = G(noise.detach(), prev.detach(), temperature=1)
-                output,_ = D(fake)
+
+                if opt.gan_type ==CT_WGAN:
+                    output, _ = D(fake)
+                else:
+                    output = D(fake)
 
                 errG = -output.mean()
                 errG.backward(retain_graph=False)
