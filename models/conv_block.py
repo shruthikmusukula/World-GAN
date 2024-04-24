@@ -6,7 +6,7 @@ import torch.nn.functional as F
 
 class ConvBlock(nn.Sequential):
     """ Conv block containing Conv2d, BatchNorm2d and LeakyReLU Layers. """
-    def __init__(self, in_channel, out_channel, ker_size, padd, stride, dim=2):
+    def __init__(self, in_channel, out_channel, ker_size, padd, stride, dim=2, drop=False):
         super().__init__()
         if dim == 2:
             self.add_module("conv", nn.Conv2d(in_channel, out_channel, kernel_size=ker_size,
@@ -21,3 +21,5 @@ class ConvBlock(nn.Sequential):
 
         self.add_module("LeakyRelu", nn.LeakyReLU(0.2, inplace=True))
 
+        if drop:
+            self.add_module("Dropout", nn.Dropout())

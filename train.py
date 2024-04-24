@@ -85,7 +85,7 @@ def train(real, opt: Config):
                 real_obj_pth = render_minecraft(opt.input_names[i], opt.coords, obj_pth, "real")
                 wandb.log({"real": wandb.Object3D(open(real_obj_pth))}, commit=False)
             except OSError:
-                pass
+                print("error in multiple inputs train")
     else:
         # Default: One image
         try:
@@ -96,7 +96,7 @@ def train(real, opt: Config):
             real_obj_pth = render_minecraft(opt.input_name, opt.coords, obj_pth, "real")
             wandb.log({"real": wandb.Object3D(open(real_obj_pth))}, commit=False)
         except OSError:
-            pass
+             print("error in single inputs train. This is fine dw")
         os.makedirs("%s/state_dicts" % (opt.out_), exist_ok=True)
 
     # Training Loop

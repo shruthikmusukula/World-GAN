@@ -289,4 +289,4 @@ if __name__ == '__main__':
 
     generate_samples(generators, noise_maps, reals, noise_amplitudes, opt, in_s=in_s, save_tensors=opt.save_tensors,
                      scale_v=opt.scale_v, scale_h=opt.scale_h, scale_d=opt.scale_d, save_dir=s_dir_name,
-                     num_samples=opt.num_samples, current_scale=cur_scale)
+                     num_samples=16, current_scale=cur_scale)

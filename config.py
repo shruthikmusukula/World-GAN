@@ -50,6 +50,7 @@ class Config(Tap):
     alpha: int = 100  # reconstruction loss weight
     token_list: List[str] = ['!', '#', '-', '1', '@', 'C', 'S',
                              'U', 'X', 'g', 'k', 't']  # default list of 1-1
+    gan_type = 0 # Type of GAN to run: 0 - regular W-GAN, 1 - W-GAN with gradient penalty, 2 - W-GAN with CT penalty 
 
     repr_type: str = None  # Which representation type to use, currently [None, block2vec, autoencoder]
 

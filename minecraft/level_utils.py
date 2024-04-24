@@ -163,7 +163,10 @@ def read_level(opt: Config):
     #opt.coords = ((0, 16), (70, 86), (0, 16)) # x, y, z   Vol 4096
 
     #House in test World
-    opt.coords = ((225, 233), (68, 78), (796, 804))  # vol 640          <-recommend using these coords
+    #opt.coords = ((225, 233), (68, 78), (796, 804))  # vol 640          <-recommend using these coords
+
+    #Village Segment in test World
+    opt.coords = ((218, 258), (58, 78), (782, 822))  # vol 32000          <-recommend using these coords
 
     #Village in test World
     #opt.coords = ((209, 255), (60, 82), (737, 834))  # vol 98164
@@ -320,7 +323,7 @@ def save_oh_to_wrld_directly(input_dir, input_name, start_coords, oh_level, bloc
 def clear_empty_world(worlds_folder, empty_world_name='Curr_Empty_World'):
     src = os.path.join(worlds_folder, 'Empty_World')
     dst = os.path.join(worlds_folder, empty_world_name)
-    print(src)
+    #print(src)
     shutil.rmtree(dst)
     shutil.copytree(src, dst)
 
