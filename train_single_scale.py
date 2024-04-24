@@ -15,9 +15,12 @@ from draw_concat import draw_concat
 from generate_noise import generate_spatial_noise
 from minecraft.level_utils import one_hot_to_blockdata_level, save_level_to_world, clear_empty_world
 from minecraft.level_renderer import render_minecraft
-from models import calc_gradient_penalty, save_networks
+from models import calc_gradient_penalty, calc_consistency_penalty, save_networks
 from utils import interpolate3D
 
+# codes for opt.gan_type
+GP_WGAN = 1 
+CT_WGAN = 2
 
 def update_noise_amplitude(z_prev, real, opt):
     """ Update the amplitude of the noise for the current scale according to the previous noise map. """
@@ -135,9 +138,9 @@ def train_single_scale(D, G, reals, generators, noise_maps, input_from_prev_scal
                 # train with real
                 D.zero_grad()
 
-                output = D(real).to(opt.device)
+                D_real1_1, D_real1_2 = D(real)
 
-                errD_real = -output.mean()
+                errD_real = -D_real1_1.to(opt.device).mean()
 
                 errD_real.backward(retain_graph=True)
 
@@ -189,15 +192,16 @@ def train_single_scale(D, G, reals, generators, noise_maps, input_from_prev_scal
                 fake = G(noise.detach(), prev)
 
                 # Then run the result through the discriminator
-                output = D(fake.detach())
+                output, _ = D(fake.detach())
                 errD_fake = output.mean()
 
                 # Backpropagation
                 errD_fake.backward(retain_graph=False)
 
                 # Gradient Penalty
-                gradient_penalty = calc_gradient_penalty(D, real, fake, opt.lambda_grad, opt.device)
-                gradient_penalty.backward(retain_graph=False)
+                if opt.gan_type == GP_WGAN or opt.gan_type == CT_WGAN:
+                    gradient_penalty = calc_gradient_penalty(D, real, fake, opt.lambda_grad, opt.device, use_ct=(opt.gan_type==CT_WGAN))
+                    gradient_penalty.backward(retain_graph=False)
 
                 grads_after = []
                 cos_sim = []
@@ -209,11 +213,17 @@ def train_single_scale(D, G, reals, generators, noise_maps, input_from_prev_scal
 
                 grad_d_fake = grads_after
 
+                #train with CT penalty
+                if opt.gan_type == CT_WGAN:
+                    ct_penalty = calc_consistency_penalty(D, real, D_real1_1, D_real1_2, LAMBDA_2=2)
+                    ct_penalty.backward(retain_graph=False)
+
                 # Logging:
                 if step % 10 == 0:
                     wandb.log({f"D(G(z))@{current_scale}": errD_fake.item(),
                                f"D(x)@{current_scale}": -errD_real.item(),
-                               f"gradient_penalty@{current_scale}": gradient_penalty.item(),
+                               f"gradient_penalty@{current_scale}": gradient_penalty.item() if opt.gan_type == GP_WGAN else 0,
+                               f"consistency_penalty@{current_scale}": ct_penalty.item() if opt.gan_type == CT_WGAN else 0,
                                f"D_real_grad@{current_scale}": diff_d_real,
                                f"D_fake_grad@{current_scale}": diff_d_fake,
                                },
@@ -235,7 +245,7 @@ def train_single_scale(D, G, reals, generators, noise_maps, input_from_prev_scal
             for j in range(opt.Gsteps):
                 G.zero_grad()
                 fake = G(noise.detach(), prev.detach(), temperature=1)
-                output = D(fake)
+                output,_ = D(fake)
 
                 errG = -output.mean()
                 errG.backward(retain_graph=False)

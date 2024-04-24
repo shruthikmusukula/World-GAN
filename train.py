@@ -13,7 +13,6 @@ from minecraft.level_renderer import render_minecraft
 from models import init_models, reset_grads, restore_weights
 from models.generator import Level_GeneratorConcatSkip2CleanAdd
 from train_single_scale import train_single_scale
-from train_single_scale_ct import train_single_scale_ct
 
 
 def calc_lowest_possible_scale(level, kernel_size, num_layers):
@@ -120,7 +119,7 @@ def train(real, opt: Config):
         D, G = init_models(opt, use_softmax)
 
         # Actually train the current scale
-        z_opt, input_from_prev_scale, G = train_single_scale_ct(D,  G, reals, generators, noise_maps,
+        z_opt, input_from_prev_scale, G = train_single_scale(D,  G, reals, generators, noise_maps,
                                                              input_from_prev_scale, noise_amplitudes, opt)
 
         # Reset grads and save current scale

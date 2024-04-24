@@ -39,7 +39,7 @@ def init_models(opt, use_softmax=True):
     return D, G
 
 
-def calc_gradient_penalty(netD, real_data, fake_data, LAMBDA, device):
+def calc_gradient_penalty(netD, real_data, fake_data, LAMBDA, device, use_ct):
     alpha = torch.rand(1, 1)
     alpha = alpha.expand(real_data.size())
     alpha = alpha.to(device)
@@ -49,7 +49,10 @@ def calc_gradient_penalty(netD, real_data, fake_data, LAMBDA, device):
     interpolates = interpolates.to(device)
     interpolates = torch.autograd.Variable(interpolates, requires_grad=True)
 
-    disc_interpolates = netD(interpolates)
+    if use_ct:
+        disc_interpolates, _ = netD(interpolates)
+    else:    
+        disc_interpolates = netD(interpolates)
 
     gradients = torch.autograd.grad(
         outputs=disc_interpolates,
@@ -62,29 +65,13 @@ def calc_gradient_penalty(netD, real_data, fake_data, LAMBDA, device):
     gradient_penalty = ((gradients.norm(2, dim=1) - 1) ** 2).mean() * LAMBDA
     return gradient_penalty
 
-def calc_gradient_penalty_ct(netD, real_data, fake_data, LAMBDA, device):
-    alpha = torch.rand(1, 1)
-    alpha = alpha.expand(real_data.size())
-    alpha = alpha.to(device)
-
-    interpolates = alpha * real_data + ((1 - alpha) * fake_data)
-
-    interpolates = interpolates.to(device)
-    interpolates = torch.autograd.Variable(interpolates, requires_grad=True)
-
-    disc_interpolates, _ = netD(interpolates)
-
-    gradients = torch.autograd.grad(
-        outputs=disc_interpolates,
-        inputs=interpolates,
-        grad_outputs=torch.ones(disc_interpolates.size()).to(device),
-        create_graph=True,
-        retain_graph=True,
-        only_inputs=True,
-    )[0]
-    gradient_penalty = ((gradients.norm(2, dim=1) - 1) ** 2).mean() * LAMBDA
-    return gradient_penalty
-
+def calc_consistency_penalty(netD, real_data, output1, output1_inner, LAMBDA_2=2):
+    output2, output2_inner = netD(real_data)
+    consistency_penalty = LAMBDA_2*((output1-output2)**2) 
+    consistency_penalty += LAMBDA_2*0.1*((output1_inner-output2_inner)**2).mean(dim=1)
+    consistency_penalty = torch.max((torch.zeros(consistency_penalty.size()).cuda()),consistency_penalty-0)
+    consistency_penalty = consistency_penalty.mean()
+    return consistency_penalty
 
 def save_networks(G, D, z_opt, opt):
     torch.save(G.state_dict(), "%s/G.pth" % (opt.outf))
