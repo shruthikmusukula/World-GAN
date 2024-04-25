@@ -169,19 +169,19 @@ def read_level(opt: Config):
     opt.coords = ((218, 258), (58, 78), (782, 822))  # vol 32000          <-recommend using these coords
 
     #Village in test World
-    #opt.coords = ((209, 255), (60, 82), (737, 834))  # vol 98164
+    # opt.coords = ((209, 255), (60, 82), (737, 834))  # vol 98164
 
     #Ship in castle World
     #opt.coords = ((315, 392), (59, 115), (-1174, -1153))  # vol 90552
 
     #Harbor in castle World
-    #opt.coords = ((271, 290), (59, 86), (-1200, -1171))  # vol 14877
+    # opt.coords = ((271, 290), (59, 86), (-1200, -1171))  # vol 14877
 
     #Windmill in castle World
-    #opt.coords = ((-332, -314), (90, 127), (-667, -643))  # vol 15984
+    # opt.coords = ((-332, -314), (90, 127), (-667, -643))  # vol 15984
 
     #Fountain in castle World
-    #opt.coords = ((9, 31), (108, 127), (-1118, -1096))  # vol 9196
+    # opt.coords = ((9, 31), (108, 127), (-1118, -1096))  # vol 9196
 
     #Storage Hall in castle World
     #opt.coords = ((133, 160), (118, 160), (-1002, -964))  # vol 43092

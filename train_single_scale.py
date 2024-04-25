@@ -208,6 +208,9 @@ def train_single_scale(D, G, reals, generators, noise_maps, input_from_prev_scal
                 if opt.gan_type == GP_WGAN or opt.gan_type == CT_WGAN:
                     gradient_penalty = calc_gradient_penalty(D, real, fake, opt.lambda_grad, opt.device, use_ct=(opt.gan_type==CT_WGAN))
                     gradient_penalty.backward(retain_graph=False)
+                else:
+                    gradient_penalty = calc_gradient_penalty(D, real, fake, 0, opt.device, use_ct=(opt.gan_type==CT_WGAN))
+                    gradient_penalty.backward(retain_graph=False)
 
                 grads_after = []
                 cos_sim = []
@@ -228,7 +231,7 @@ def train_single_scale(D, G, reals, generators, noise_maps, input_from_prev_scal
                 if step % 10 == 0:
                     wandb.log({f"D(G(z))@{current_scale}": errD_fake.item(),
                                f"D(x)@{current_scale}": -errD_real.item(),
-                               f"gradient_penalty@{current_scale}": gradient_penalty.item() if opt.gan_type == GP_WGAN else 0,
+                               f"gradient_penalty@{current_scale}": gradient_penalty.item(),
                                f"consistency_penalty@{current_scale}": ct_penalty.item() if opt.gan_type == CT_WGAN else 0,
                                f"D_real_grad@{current_scale}": diff_d_real,
                                f"D_fake_grad@{current_scale}": diff_d_fake,
