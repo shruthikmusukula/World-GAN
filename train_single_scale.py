@@ -19,6 +19,7 @@ from models import calc_gradient_penalty, calc_consistency_penalty, save_network
 from utils import interpolate3D
 
 # codes for opt.gan_type
+WGAN = 0
 GP_WGAN = 1 
 CT_WGAN = 2
 
@@ -238,6 +239,11 @@ def train_single_scale(D, G, reals, generators, noise_maps, input_from_prev_scal
                                },
                               step=step, sync=False)
                 optimizerD.step()
+
+                #clip weights
+                if opt.gan_type == WGAN:
+                    for p in D.parameters():
+                        p.data.clamp_(-0.01, 0.01)
 
                 if opt.use_multiple_inputs:
                     z_opt_group[curr_inp] = z_opt
