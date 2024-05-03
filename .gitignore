@@ -1,7 +1,7 @@
 wandb/
 venv/
 .idea/
-output/
+output/wandb
 .vscode/
 .history/
 __pycache__/
